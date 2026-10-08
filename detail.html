@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Provider Details</title>
+</head>
+
+<body>
+
+<a href="{% url 'provider_search' %}">
+    ← Back to Search
+</a>
+
+<h1>Provider Details</h1>
+
+<h2>
+    {% if provider.party_type == "entity" %}
+        {{ provider.business_name }}
+    {% else %}
+        {{ provider.first_name }}
+        {{ provider.middle_name }}
+        {{ provider.last_name }}
+    {% endif %}
+</h2>
+
+<h3>Provider Information</h3>
+
+<p><strong>Type:</strong> {{ provider.party_type }}</p>
+<p><strong>Category:</strong> {{ provider.provider_category }}</p>
+<p><strong>Specialty:</strong> {{ provider.specialty }}</p>
+
+<p>
+    <strong>Address:</strong>
+    {{ provider.address }},
+    {{ provider.city }},
+    {{ provider.state }}
+    {{ provider.zip }}
+</p>
+
+
+<h3>Identifiers</h3>
+
+{% if identifiers %}
+
+<ul>
+    {% for identifier in identifiers %}
+        <li>
+            <strong>{{ identifier.identifier_type }}:</strong>
+            {{ identifier.identifier_value }}
+        </li>
+    {% endfor %}
+</ul>
+
+{% else %}
+
+<p>No identifiers available.</p>
+
+{% endif %}
+
+
+<h3>Exclusion Information</h3>
+
+{% for exclusion in exclusions %}
+
+<hr>
+
+<p>
+    <strong>Source:</strong>
+    {{ exclusion.data_source.source_name }}
+</p>
+
+<p>
+    <strong>Exclusion Type:</strong>
+    {{ exclusion.exclusion_type }}
+</p>
+
+<p>
+    <strong>Exclusion Date:</strong>
+    {{ exclusion.exclusion_date }}
+</p>
+
+<p>
+    <strong>Status:</strong>
+    {{ exclusion.status }}
+</p>
+
+{% empty %}
+
+<p>No exclusion records available.</p>
+
+{% endfor %}
+
+</body>
+</html>

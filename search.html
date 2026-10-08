@@ -1,0 +1,220 @@
+
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Provider Exclusion Search</title>
+
+    <link rel="stylesheet" href="{% static 'providers/style.css' %}">
+</head>
+
+<body>
+
+<header class="header">
+    <div class="container">
+
+        <h1>Provider Exclusion Search</h1>
+
+        <p>
+            Search federal and state provider exclusion records
+        </p>
+
+    </div>
+</header>
+
+
+<main class="container">
+
+    <section class="search-section">
+
+        <h2>Search Providers</h2>
+
+        <p>
+            Search by first name, last name, business name, or NPI.
+            You can use one or multiple fields.
+        </p>
+
+        <form method="GET" class="search-form">
+
+            <input
+                type="text"
+                name="first_name"
+                value="{{ first_name }}"
+                placeholder="First Name"
+            >
+
+            <input
+                type="text"
+                name="last_name"
+                value="{{ last_name }}"
+                placeholder="Last Name"
+            >
+
+            <input
+                type="text"
+                name="business_name"
+                value="{{ business_name }}"
+                placeholder="Business Name"
+            >
+
+            <input
+                type="text"
+                name="npi"
+                value="{{ npi }}"
+                placeholder="NPI"
+            >
+
+            <button type="submit">
+                Search
+            </button>
+
+        </form>
+
+    </section>
+
+
+    {% if first_name or last_name or business_name or npi %}
+
+    <section class="results">
+
+        <h2>Search Results</h2>
+
+        {% if results %}
+
+        <table class="results-table">
+
+            <thead>
+                <tr>
+                    <th>Provider</th>
+                    <th>Business</th>
+                    <th>Category</th>
+                    <th>State</th>
+                    <th>Exclusion Source</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for provider in results %}
+
+                <tr>
+
+                    <td>
+
+                        <a href="{% url 'provider_detail' provider.party_id %}">
+
+                            {% if provider.party_type == "entity" %}
+
+                                {% if provider.business_name != "N/A" %}
+                                    {{ provider.business_name }}
+                                {% endif %}
+
+                            {% else %}
+
+                                {% if provider.first_name != "N/A" %}
+                                    {{ provider.first_name }}
+                                {% endif %}
+
+                                {% if provider.middle_name != "N/A" %}
+                                    {{ provider.middle_name }}
+                                {% endif %}
+
+                                {% if provider.last_name != "N/A" %}
+                                    {{ provider.last_name }}
+                                {% endif %}
+
+                            {% endif %}
+
+                        </a>
+
+                    </td>
+
+
+                    <td>
+
+                        {% if provider.business_name != "N/A" %}
+                            {{ provider.business_name }}
+                        {% endif %}
+
+                    </td>
+
+
+                    <td>
+
+                        {% if provider.provider_category != "N/A" %}
+                            {{ provider.provider_category }}
+                        {% endif %}
+
+                    </td>
+
+
+                    <td>
+
+                        {% if provider.state != "N/A" %}
+                            {{ provider.state }}
+                        {% endif %}
+
+                    </td>
+
+
+                    <td>
+
+                        {% for exclusion in provider.exclusionrecord_set.all %}
+
+                            {% if exclusion.data_source %}
+
+                                {{ exclusion.data_source.source_name }}
+
+                                {% if not forloop.last %}
+                                    <br>
+                                {% endif %}
+
+                            {% endif %}
+
+                        {% empty %}
+
+                            N/A
+
+                        {% endfor %}
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+
+        {% else %}
+
+        <div class="no-results">
+
+            <strong>
+                No excluded providers found.
+            </strong>
+
+            <p>
+                No records matched your search.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </section>
+
+    {% endif %}
+
+</main>
+
+</body>
+
+</html>
