@@ -78,7 +78,7 @@ DATABASES = {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "excluded_providers",
         "USER": "postgres",
-        "PASSWORD": "Newlife1",
+        "PASSWORD": "********",
         "HOST": "localhost",
         "PORT": "5432",
     }
